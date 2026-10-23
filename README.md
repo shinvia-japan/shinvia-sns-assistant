@@ -60,3 +60,33 @@ git push -u origin feature/my-change
 ```
 
 GitHubの画面でPull Requestを作成し、確認後にmainへ取り込みます。pushにはリポジトリの書き込み権限が必要です。認証情報をコードに書かないでください。
+
+## WindowsのChromeから使う：GitHub Pagesで無料公開
+
+このアプリはサーバー側の処理が不要なため、GitHub Pagesで公開できます。公開後はPCへのNode.jsインストールや、Codexでのサーバー起動は不要です。APIキー、独自ドメイン、有料契約も不要です。
+
+GitHub Freeでは公開（Public）リポジトリでGitHub Pagesを使えます。PrivateリポジトリでPagesを使う場合はプラン条件が異なります。Privateの場合はここで止まり、公開してよいコードかを確認してください。この手順では可視性の変更や有料プランの契約は行いません。Pagesは一般公開されるWebサイトです。アプリにログイン制限はありません。
+
+### 初回設定（リポジトリの管理権限がある方）
+
+1. GitHubで公開対応用の `feature/github-pages` ブランチから `main` へのPull Requestを作り、差分を確認してマージします。すでにマージ済みなら不要です。
+2. リポジトリ上部の **Settings** を開きます。個人アカウントの設定ではなく、このリポジトリの設定です。
+3. 左側の **Pages** を選びます。
+4. **Build and deployment** → **Source** で **GitHub Actions** を選びます。サンプルワークフローを追加する必要はありません。本リポジトリに `.github/workflows/pages.yml` を用意しています。
+5. リポジトリ上部の **Actions** → **Publish Shinvia to GitHub Pages** を開きます。Actionsが無効な場合は、組織の方針を確認し、このリポジトリのActionsを有効にします。
+6. **Run workflow** を押し、ブランチが **main** であることを確認して、緑の **Run workflow** を押します。先に自動実行が失敗していても、PagesのSource設定後にここから実行できます。
+7. `build` と `deploy` が緑色になるまで待ちます。失敗した場合は赤い項目を開きます。`build` はテスト、`deploy` はPagesのSource・公開条件・権限を確認してください。有料契約は行わず、エラー内容を確認してください。
+8. **Settings → Pages** に表示された公開URLをWindowsのChromeで開きます。標準の想定URLは `https://shinvia-japan.github.io/shinvia-sns-assistant/` です。独自ドメイン等がある場合はGitHubが表示する実際のURLを使ってください。
+9. SNSを選び、テーマ入力 → 文案作成 → 編集 → 保存 → コピーを試します。再読み込み後も保存した投稿が表示されることを確認します。
+10. Chromeのアドレス欄右側の星マークでブックマークします。次回からそのURLを開くだけで使えます。
+
+初回公開直後に404になる場合は、Actionsの成功とPagesのURLを確認し、数分待って再読み込みしてください。URL末尾の `/shinvia-sns-assistant/` を省略しないでください。
+
+### 公開後の注意
+
+- ワークフローは `main` の更新時にも自動実行されます。テスト成功後に画面用の4ファイルだけを公開し、`.git`・テスト・開発サーバーは配信しません。
+- JavaScript、画面、CSSは閲覧者から見えます。認証情報や秘密の情報をコードに追加しないでください。
+- 保存した投稿文は各利用者のChrome内にだけ保存され、GitHubに送られません。他の端末や別のURLには引き継がれません。localhostで保存した投稿も公開URLには自動移行しません。必要な文章はコピーして移してください。
+- HTTPS上ではコピーボタンが使えます。Chromeの権限等で失敗した場合は、選択された文をCtrl+Cでコピーしてください。
+- サイトを非公開にするには **Settings → Pages → Unpublish site** を使います。再公開を防ぐにはワークフローも無効にします。
+- GitHub Pages・Actionsの無料利用にはGitHub所定の条件や上限があります。この小規模な静的試作品は無料枠での利用を想定しています。GitHubの画面に課金やプラン変更が表示されたら進めずに確認してください。
