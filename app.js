@@ -66,3 +66,25 @@ function render() {
 window.addEventListener('beforeunload', event => { if (hasUnsaved()) { event.preventDefault(); event.returnValue = ''; } });
 render();
 if (!storageAvailable) notify('ブラウザの保存機能を利用できません。作成した文章はコピーして保管してください。');
+
+
+const AI_API_URL = "https://shinvia-sns-api.onsin-sinano.workers.dev/";
+
+async function generateWithAI(platform, topic, notes = "") {
+  const response = await fetch(AI_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ platform, topic, notes })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "AI生成に失敗しました");
+  }
+
+  return data.text;
+}
+  
