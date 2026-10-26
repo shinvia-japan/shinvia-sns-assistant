@@ -30,7 +30,7 @@ $('create-form').addEventListener('submit', async event => {
   event.preventDefault(); if (!$('theme').value.trim()) { notify('投稿テーマを入力してください。'); $('theme').focus(); return; }
   if (!canReplace()) return;
   activePlatform = new FormData(event.currentTarget).get('platform'); activeTheme = $('theme').value.trim(); currentId = null;
-  openEditor(await generateWithAI( activeTheme, $('details').value, activePlatform, $('tone').value));
+  openEditor(await generateWithAI(activePlatform, activeTheme, $('details').value));
   notify('文案を作成しました。あなたの言葉に編集してみましょう。'); $('draft').focus();
 });
 $('draft').addEventListener('input', updateCount);
