@@ -73,9 +73,10 @@ const AI_API_URL = "https://shinvia-sns-api.onsin-sinano.workers.dev/";
 async function generateWithAI(platform, topic, notes = "") {
   const response = await fetch(AI_API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+   headers: {
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${prompt("Shinviaの認証トークンを入力してください")}`
+},
     body: JSON.stringify({ platform, topic, notes })
   });
 
