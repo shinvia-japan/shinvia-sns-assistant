@@ -1,4 +1,4 @@
-import { requestAI, platforms, readPosts } from './generator.js';
+import { requestAI, platforms, readPosts, draftLengthHint } from './generator.js';
 const $ = id => document.getElementById(id);
 const key = 'shinvia.posts.v1';
 let posts = [], currentId = null, activePlatform = 'instagram', activeTheme = '', generating = false;
@@ -12,8 +12,7 @@ function persist(next) {
 function updateCount() {
   const count = Array.from($('draft').value).length;
   $('count').textContent = `${count.toLocaleString('ja-JP')}文字`;
-  const limit = activePlatform === 'threads' ? 500 : activePlatform === 'instagram' ? 2200 : null;
-  $('length-hint').textContent = limit && count > limit ? `目安の${limit}文字を超えています。投稿先の制限に合わせて短くしてください。` : '投稿先の文字数制限と内容を確認してから貼り付けてください。';
+  $('length-hint').textContent = draftLengthHint($('draft').value, activePlatform);
 }
 function openEditor(text) {
   $('empty-state').hidden = true; $('editor-area').hidden = false;

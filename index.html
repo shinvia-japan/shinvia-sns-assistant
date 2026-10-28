@@ -2,7 +2,7 @@
 <html lang="ja">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shinvia｜SNS投稿アシスタント</title><link rel="stylesheet" href="./style.css"><script type="module" src="./app.js"></script></head>
 <body>
-<header><a class="brand" href="./" aria-label="Shinvia ホーム"><span class="brand-icon">S<span>✦</span></span>shinvia<span class="brand-label">SNS ASSISTANT</span></a><span class="badge">無料の試作品</span></header>
+<header><a class="brand" href="./" aria-label="Shinvia ホーム"><span class="brand-icon">S<span>✦</span></span>shinvia<span class="brand-label">SNS ASSISTANT</span></a><span class="badge">開発中の試作品</span></header>
 <main>
 <section class="hero"><p class="eyebrow">YOUR IDEAS, YOUR WORDS.</p><h1>伝えたい想いを、<br class="mobile">投稿にしよう。</h1><p>テーマを入れるだけ。Shinviaと一緒に、あなたらしい発信を。</p><div class="privacy">✓ 日本語でかんたん作成 <span>·</span> ✓ 保存はこのブラウザ内</div></section>
 <div class="workspace">
@@ -11,7 +11,7 @@
 <fieldset><legend>投稿するSNS <span class="required">必須</span></legend><div class="platforms"><label><input type="radio" name="platform" value="instagram" checked><span><b class="social-icon">◎</b>Instagram<small>1枚・約9秒のリール</small></span></label><label><input type="radio" name="platform" value="threads"><span><b class="social-icon">＠</b>Threads<small>薬剤師の日常のひと言</small></span></label><label><input type="radio" name="platform" value="room"><span><b class="social-icon room">R</b>楽天ROOM<small>商品の紹介・メモ</small></span></label></div></fieldset>
 <label class="field" for="theme">投稿テーマ <span class="required">必須</span></label><input id="theme" name="theme" maxlength="100" required placeholder="例：休日に楽しむ、おうちカフェ" autocomplete="off"><p class="hint">短い言葉でOK！商品名や、今日のできごとも。</p>
 <div class="examples"><span>試してみる</span><button type="button" data-example="休日のおうちカフェ">☕ おうちカフェ</button><button type="button" data-example="お気に入りの収納アイテム">▤ 収納アイテム</button></div>
-<label class="field" for="details">伝えたいポイント <span class="optional">任意</span></label><textarea id="details" rows="3" maxlength="1500" placeholder="例：お気に入りのマグで、ゆっくり過ごす朝。手軽にできるラテも紹介したい。"></textarea>
+<label class="field" for="details">確認した事実・出典・使用経験 <span class="optional">任意</span></label><textarea id="details" rows="3" maxlength="1500" placeholder="例：確認した商品仕様：幅20cm、ステンレス。使用経験：未使用。健康情報は資料名・出典URL・確認した事実も記入。"></textarea><p class="hint">未確認の効果や体験は補わずに作成します。出典URLの内容を自動で取得・検証する機能はありません。</p>
 <label class="field" for="tone">文章の雰囲気</label><select id="tone"><option value="friendly">やさしく、親しみやすく</option><option value="polite">落ち着いて、丁寧に</option></select>
 <p id="generation-error" class="generation-error" role="alert" hidden></p>
 <button type="submit" class="primary generate">✦ 投稿文案を作成する <span>→</span></button><p class="local-note">テーマ・補足情報・投稿先・文章の雰囲気を外部AIサービスへ送信します。<br>個人情報・患者情報は入力しないでください。利用条件・料金は管理者にご確認ください。<br>医薬品・健康情報は公的資料や添付文書で確認してください。</p>
