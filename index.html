@@ -4,16 +4,17 @@
 <body>
 <header><a class="brand" href="./" aria-label="Shinvia ホーム"><span class="brand-icon">S<span>✦</span></span>shinvia<span class="brand-label">SNS ASSISTANT</span></a><span class="badge">無料の試作品</span></header>
 <main>
-<section class="hero"><p class="eyebrow">YOUR IDEAS, YOUR WORDS.</p><h1>伝えたい想いを、<br class="mobile">投稿にしよう。</h1><p>テーマを入れるだけ。Shinviaと一緒に、あなたらしい発信を。</p><div class="privacy">✓ APIキー不要 <span>·</span> ✓ 外部への送信なし <span>·</span> ✓ 無料で使える</div></section>
+<section class="hero"><p class="eyebrow">YOUR IDEAS, YOUR WORDS.</p><h1>伝えたい想いを、<br class="mobile">投稿にしよう。</h1><p>テーマを入れるだけ。Shinviaと一緒に、あなたらしい発信を。</p><div class="privacy">✓ 日本語でかんたん作成 <span>·</span> ✓ 保存はこのブラウザ内</div></section>
 <div class="workspace">
 <section class="card composer" aria-labelledby="create-title"><div class="section-heading"><span class="step">01</span><div><h2 id="create-title">投稿のヒントを入力</h2><p>まずは、どんなことを伝えたいですか？</p></div></div>
 <form id="create-form">
-<fieldset><legend>投稿するSNS <span class="required">必須</span></legend><div class="platforms"><label><input type="radio" name="platform" value="instagram" checked><span><b class="social-icon">◎</b>Instagram<small>写真に添える文章</small></span></label><label><input type="radio" name="platform" value="threads"><span><b class="social-icon">＠</b>Threads<small>気軽な会話・つぶやき</small></span></label><label><input type="radio" name="platform" value="room"><span><b class="social-icon room">R</b>楽天ROOM<small>商品の紹介・メモ</small></span></label></div></fieldset>
+<fieldset><legend>投稿するSNS <span class="required">必須</span></legend><div class="platforms"><label><input type="radio" name="platform" value="instagram" checked><span><b class="social-icon">◎</b>Instagram<small>1枚・約9秒のリール</small></span></label><label><input type="radio" name="platform" value="threads"><span><b class="social-icon">＠</b>Threads<small>薬剤師の日常のひと言</small></span></label><label><input type="radio" name="platform" value="room"><span><b class="social-icon room">R</b>楽天ROOM<small>商品の紹介・メモ</small></span></label></div></fieldset>
 <label class="field" for="theme">投稿テーマ <span class="required">必須</span></label><input id="theme" name="theme" maxlength="100" required placeholder="例：休日に楽しむ、おうちカフェ" autocomplete="off"><p class="hint">短い言葉でOK！商品名や、今日のできごとも。</p>
 <div class="examples"><span>試してみる</span><button type="button" data-example="休日のおうちカフェ">☕ おうちカフェ</button><button type="button" data-example="お気に入りの収納アイテム">▤ 収納アイテム</button></div>
 <label class="field" for="details">伝えたいポイント <span class="optional">任意</span></label><textarea id="details" rows="3" maxlength="1500" placeholder="例：お気に入りのマグで、ゆっくり過ごす朝。手軽にできるラテも紹介したい。"></textarea>
 <label class="field" for="tone">文章の雰囲気</label><select id="tone"><option value="friendly">やさしく、親しみやすく</option><option value="polite">落ち着いて、丁寧に</option></select>
-<button type="submit" class="primary generate">✦ 投稿文案を作成する <span>→</span></button><p class="local-note">AI投稿文案の体験版です。定型文を端末内で組み立てます。<br>外部AIは使用しません。内容は投稿前に確認してください。</p>
+<p id="generation-error" class="generation-error" role="alert" hidden></p>
+<button type="submit" class="primary generate">✦ 投稿文案を作成する <span>→</span></button><p class="local-note">テーマ・補足情報・投稿先・文章の雰囲気を外部AIサービスへ送信します。<br>個人情報・患者情報は入力しないでください。利用条件・料金は管理者にご確認ください。<br>医薬品・健康情報は公的資料や添付文書で確認してください。</p>
 </form></section>
 <section class="card output" aria-labelledby="output-title"><div class="section-heading"><span class="step">02</span><div><h2 id="output-title">文案をあなたらしく編集</h2><p>言葉を整えたら、保存・コピーしましょう。</p></div></div>
 <div id="empty-state" class="empty-state"><div class="paper">≡<span>✦</span></div><h3>あなたのアイデアが、ここで文章に。</h3><p>左のフォームにテーマを入力して<br>「投稿文案を作成する」を押してください。</p><div class="empty-tags"><span>つくる</span> → <span>整える</span> → <span>届ける</span></div></div>
