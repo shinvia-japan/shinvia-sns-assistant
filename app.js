@@ -1,7 +1,7 @@
-import { generate, platforms, readPosts } from './generator.js';
+import { requestAI, platforms, readPosts, draftLengthHint } from './generator.js';
 const $ = id => document.getElementById(id);
 const key = 'shinvia.posts.v1';
-let posts = [], currentId = null, activePlatform = 'instagram', activeTheme = '', variant = 0;
+let posts = [], currentId = null, activePlatform = 'instagram', activeTheme = '', generating = false;
 let storageAvailable = true;
 try { posts = readPosts(localStorage.getItem(key)); } catch { storageAvailable = false; }
 function notify(message) { $('status').textContent = message; }
@@ -12,8 +12,7 @@ function persist(next) {
 function updateCount() {
   const count = Array.from($('draft').value).length;
   $('count').textContent = `${count.toLocaleString('ja-JP')}文字`;
-  const limit = activePlatform === 'threads' ? 500 : activePlatform === 'instagram' ? 2200 : null;
-  $('length-hint').textContent = limit && count > limit ? `目安の${limit}文字を超えています。投稿先の制限に合わせて短くしてください。` : '投稿先の文字数制限と内容を確認してから貼り付けてください。';
+  $('length-hint').textContent = draftLengthHint($('draft').value, activePlatform);
 }
 function openEditor(text) {
   $('empty-state').hidden = true; $('editor-area').hidden = false;
@@ -26,12 +25,41 @@ function hasUnsaved() {
   return $('draft').value.trim() !== '' && (!saved || saved.text !== $('draft').value);
 }
 function canReplace() { return !hasUnsaved() || confirm('保存していない文案があります。文案を置き換えますか？'); }
+function setGenerating(value) {
+  generating = value;
+  $('create-form').querySelectorAll('input, textarea, select, button').forEach(control => { control.disabled = value; });
+  $('draft').readOnly = value;
+  $('save').disabled = value;
+  $('create-form').setAttribute('aria-busy', String(value));
+}
 $('create-form').addEventListener('submit', async event => {
-  event.preventDefault(); if (!$('theme').value.trim()) { notify('投稿テーマを入力してください。'); $('theme').focus(); return; }
+  event.preventDefault();
+  if (generating) return;
+  if (!$('theme').value.trim()) { notify('投稿テーマを入力してください。'); $('theme').focus(); return; }
   if (!canReplace()) return;
-  activePlatform = new FormData(event.currentTarget).get('platform'); activeTheme = $('theme').value.trim(); currentId = null;
-  openEditor(await generateWithAI(activePlatform, activeTheme, $('details').value));
-  notify('文案を作成しました。あなたの言葉に編集してみましょう。'); $('draft').focus();
+  const platform = new FormData(event.currentTarget).get('platform');
+  const theme = $('theme').value.trim();
+  const details = $('details').value;
+  const tone = $('tone').value;
+  $('generation-error').hidden = true;
+  // Runtime input only: never persist authentication in code or browser storage.
+  const token = prompt('Shinviaの認証トークンを入力してください（保存されません）');
+  if (token === null) { notify('AI生成をキャンセルしました。以前の文案はそのままです。'); return; }
+  setGenerating(true);
+  notify('AIで文案を作成しています。しばらくお待ちください。');
+  try {
+    const text = await requestAI({ platform, theme, details, tone, token });
+    // Commit editor metadata only after a valid response has arrived.
+    activePlatform = platform; activeTheme = theme; currentId = null;
+    openEditor(text);
+    notify('文案を作成しました。医薬品・健康情報は公的資料や添付文書で確認してください。');
+  } catch (error) {
+    $('generation-error').textContent = `${error.message} 以前の文案は変更していません。`;
+    $('generation-error').hidden = false;
+    notify('生成できませんでした。入力フォームのエラーをご確認ください。');
+  } finally {
+    setGenerating(false);
+  }
 });
 $('draft').addEventListener('input', updateCount);
 $('save').addEventListener('click', () => {
@@ -57,35 +85,12 @@ function render() {
     const date = document.createElement('time'); date.dateTime = post.date; const timestamp = new Date(post.date); date.textContent = Number.isNaN(timestamp.getTime()) ? '保存日時不明' : timestamp.toLocaleString('ja-JP');
     const actions = document.createElement('div'); actions.className = 'post-buttons';
     const open = document.createElement('button'); open.className = 'secondary'; open.textContent = '開いて編集'; open.setAttribute('aria-label', `${post.theme}を開いて編集`);
-    open.addEventListener('click', () => { if (!canReplace()) return; currentId = post.id; activePlatform = post.platform; activeTheme = post.theme; openEditor(post.text); $('draft').focus(); notify('保存した投稿を開きました。'); });
+    open.addEventListener('click', () => { if (generating) { notify('生成が終わるまでお待ちください。'); return; } if (!canReplace()) return; currentId = post.id; activePlatform = post.platform; activeTheme = post.theme; openEditor(post.text); $('draft').focus(); notify('保存した投稿を開きました。'); });
     const remove = document.createElement('button'); remove.className = 'delete'; remove.textContent = '削除'; remove.setAttribute('aria-label', `${post.theme}を削除`);
-    remove.addEventListener('click', () => { if (confirm('この保存済み投稿を削除しますか？')) { if (persist(posts.filter(p => p.id !== post.id))) { if (currentId === post.id) { currentId = null; $('save').textContent = '保存する'; } notify('保存済み投稿を削除しました。'); } } });
+    remove.addEventListener('click', () => { if (generating) { notify('生成が終わるまでお待ちください。'); return; } if (confirm('この保存済み投稿を削除しますか？')) { if (persist(posts.filter(p => p.id !== post.id))) { if (currentId === post.id) { currentId = null; $('save').textContent = '保存する'; } notify('保存済み投稿を削除しました。'); } } });
     actions.append(open, remove); article.append(badge, title, body, date, actions); $('saved-list').append(article);
   }
 }
 window.addEventListener('beforeunload', event => { if (hasUnsaved()) { event.preventDefault(); event.returnValue = ''; } });
 render();
 if (!storageAvailable) notify('ブラウザの保存機能を利用できません。作成した文章はコピーして保管してください。');
-
-
-const AI_API_URL = "https://shinvia-sns-api.onsin-sinano.workers.dev/";
-
-async function generateWithAI(platform, topic, notes = "") {
-  const response = await fetch(AI_API_URL, {
-    method: "POST",
-   headers: {
-  "Content-Type": "application/json",
-  "Authorization": `Bearer ${prompt("Shinviaの認証トークンを入力してください")}`
-},
-    body: JSON.stringify({ platform, topic, notes })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || "AI生成に失敗しました");
-  }
-
-  return data.text;
-}
-  
